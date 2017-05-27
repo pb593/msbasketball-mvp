@@ -2,11 +2,15 @@ package controllers
 
 import javax.inject._
 
+import dao.ApplicationDAO
 import org.joda.time.{Days, LocalDate, Period}
 import play.api._
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
+import play.api.cache.Cache
+import play.api.Play.current
+import play.api.db._
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -23,6 +27,8 @@ class HomeController @Inject() extends Controller {
    * a path of `/`.
    */
 
+
+  val dao = new ApplicationDAO
   val idSubmitForm = Form(
       "id" -> text
   )
@@ -100,4 +106,11 @@ class HomeController @Inject() extends Controller {
       Ok(views.html.message("User with id %s successfully un-signed up from session on %s".format(inputForm.userId, date.toString)))
     }
   }
+
+  def db = Action {
+
+    Ok(dao.sessions().map(_.toString).reduce(_ + _))
+  }
+
+
 }

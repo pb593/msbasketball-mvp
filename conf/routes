@@ -8,6 +8,8 @@ GET     /                           controllers.HomeController.index
 POST    /idSubmit                   controllers.HomeController.idSubmit
 POST    /signup                     controllers.HomeController.signup
 
+GET     /db                         controllers.HomeController.db
+
 GET     /state                      controllers.HomeController.state
 
 # Map static resources from the /public folder to the /assets URL path
