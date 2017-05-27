@@ -1,0 +1,10 @@
+@()
+
+@main("Welcome to MS Basketball") {
+<h1>Welcome to MSBasketball</h1>
+<p>Please enter your MS Basketball ID and hit Submit / Enter</p>
+<form method="post" action="@routes.HomeController.idSubmit()" autocomplete="on">
+    <input type="text" name="id"><br>
+    <input type="submit">
+</form>
+}
