@@ -1,8 +1,11 @@
 @(date: org.joda.time.LocalDate, userId: String, isUserIn : Boolean)
-<p>You are currently marked as @if(isUserIn) {IN} else {OUT} for the training on @date.toString.</p>
-<form method="post" action="@routes.HomeController.signup()" autocomplete="on">
+
+@main("MS Basketball") {
+<p class="form-title display-4">You are currently marked as @if(isUserIn) {IN} else {OUT} for the training on @date.toString.</p>
+<form method="post" action="@routes.HomeController.signup()" autocomplete="on" class="login">
     <input type="text" name="date" value="@date.toString" hidden="true">
     <input type="text" name="userId" value="@userId" hidden="true">
     <input type="text" name="action" value="@if(isUserIn) {unsignup} else {signup}" hidden="true">
-    <input type="submit" value="@if(isUserIn) {Un-signup} else {Signup}">
+    <input type="submit" value="@if(isUserIn) {Un-signup} else {Signup}" class="pass-reset-submit btn btn-success btn-sm">
 </form>
+}

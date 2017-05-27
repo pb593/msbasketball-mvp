@@ -59,14 +59,14 @@ class HomeController @Inject() extends Controller {
       val offerDate = if(possibleSignupDates.nonEmpty) possibleSignupDates.head else null
       logger.debug("Offer date for this user is: %s".format(offerDate))
       if(offerDate == null)
-        Ok("No date for which you could sign up at the moment. Check back later")
+        Ok(views.html.message("No date for which you could sign up at the moment. Check back later"))
       else {
         if(globals.signups(offerDate).contains(id)) { // client signed up
           Ok(views.html.signup(offerDate, id, true))
         }
         else { // client not signed up
           if(globals.signups(offerDate).size >= 15) // date FULL
-            Ok("The only date for which you could signup for is %s, but this session is currently FULL.".format(offerDate.toString))
+            Ok(views.html.message("The only date for which you could signup for is %s, but this session is currently FULL.".format(offerDate.toString)))
           else // not FULL
             Ok(views.html.signup(offerDate, id, false))
         }
@@ -75,7 +75,7 @@ class HomeController @Inject() extends Controller {
 
     }
     else {
-      Ok("Unknown user. Did you type in your ID correctly???")
+      Ok(views.html.message("Unknown user. Did you type in your ID correctly???"))
     }
   }
 
@@ -89,15 +89,15 @@ class HomeController @Inject() extends Controller {
   def signup = Action { implicit request =>
     val inputForm: SignupForm = signupForm.bindFromRequest.get
     val date = new LocalDate(inputForm.date)
-    Ok("Got the signup form: %s".format(inputForm.toString))
+    Ok(views.html.message("Got the signup form: %s".format(inputForm.toString)))
     // todo: add validation
     if(inputForm.action == "signup") { // user wants to signup
       globals.signups(date) += inputForm.userId
-      Ok("User with id %s successfully signed up for session on %s".format(inputForm.userId, date.toString))
+      Ok(views.html.message("User with id %s successfully signed up for session on %s".format(inputForm.userId, date.toString)))
     }
     else { // unsignup
       globals.signups(date) -= inputForm.userId
-      Ok("User with id %s successfully un-signed up from session on %s".format(inputForm.userId, date.toString))
+      Ok(views.html.message("User with id %s successfully un-signed up from session on %s".format(inputForm.userId, date.toString)))
     }
   }
 }

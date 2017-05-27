@@ -1,10 +1,24 @@
 import java.util.Date
 
 import org.joda.time.LocalDate
+import play.api._
+import play.api.mvc._
+import play.api.mvc.Results._
+
+import scala.concurrent.Future
 
 /**
   * Created by pb593 on 24/05/2017.
   */
+object Global extends GlobalSettings {
+
+  override def onHandlerNotFound(request: RequestHeader): Future[Result] = {
+    Future.successful(Redirect("/"))
+  }
+
+}
+
+
 package object globals {
 
   val pmAdvancePeriod = 7; // days

@@ -1,10 +1,12 @@
 @()
 
-@main("Welcome to MS Basketball") {
-<h1>Welcome to MSBasketball</h1>
-<p>Please enter your MS Basketball ID and hit Submit / Enter</p>
-<form method="post" action="@routes.HomeController.idSubmit()" autocomplete="on">
+@main("MS Basketball") {
+<span href="#" class="logo">
+    <img src="@routes.Assets.versioned("images/mslogo.png")">
+</span>
+<p class="form-title display-4">Please enter your MS Basketball ID</p>
+<form method="post" action="@routes.HomeController.idSubmit()" class="login">
     <input type="text" name="id"><br>
-    <input type="submit">
+    <input type="submit" class="pass-reset-submit btn btn-success btn-sm">
 </form>
 }
