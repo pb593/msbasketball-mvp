@@ -36,7 +36,7 @@ class ApplicationDAO {
     var result = mutable.MutableList.empty[User]
     try {
       val stmt = conn.createStatement
-      val rs = stmt.executeQuery("SELECT Users.UserId, Users.RealName, Users.isPermanentMember FROM ((Signups INNER JOIN Sessions ON Signups.SessionId = Sessions.SessionId) INNER JOIN Users ON Signups.UserId = Users.UserId) WHERE DATE(Sessions.dtime)='%s'::date".format(date.toString("yyyy-MM-dd")))
+      val rs = stmt.executeQuery("SELECT DISTINCT Users.UserId, Users.RealName, Users.isPermanentMember FROM ((Signups INNER JOIN Sessions ON Signups.SessionId = Sessions.SessionId) INNER JOIN Users ON Signups.UserId = Users.UserId) WHERE DATE(Sessions.dtime)='%s'::date".format(date.toString("yyyy-MM-dd")))
       while(rs.next) {
         result += User(rs.getString("UserId"), rs.getString("RealName"), rs.getBoolean("isPermanentMember"))
       }
