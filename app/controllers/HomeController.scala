@@ -82,12 +82,17 @@ class HomeController @Inject() extends Controller {
         logger.debug("Possible signup dates for this user are: %s".format(possibleSignupDates.toString()))
         val offerDate = if(possibleSignupDates.nonEmpty) possibleSignupDates.head else null
         logger.debug("Offer date for this user is: %s".format(offerDate))
-        if(offerDate == null)
+        if(offerDate == null) // no future date for which can signup
           Ok(views.html.message("No date for which you could sign up at the moment. Check back later"))
-        else {
+        else { // there is a potential signup date
           val userSignupList = dao.signupList(offerDate).map(u => u.userId)
           if(userSignupList.contains(id)) { // client signed up
-            Ok(views.html.signup(offerDate, id, true))
+            if(!isPM && Days.daysBetween(today, offerDate) < globals.minUnsignupNotice ) {
+              Ok(views.html.message("You are signed up for %s, and it is now too late to pull out.".format(offerDate.toString)))
+            }
+            else {
+              Ok(views.html.signup(offerDate, id, true))
+            }
           }
           else { // client not signed up
             if(userSignupList.size >= 15) // date FULL
