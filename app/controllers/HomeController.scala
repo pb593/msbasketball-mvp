@@ -87,7 +87,7 @@ class HomeController @Inject() extends Controller {
         else { // there is a potential signup date
           val userSignupList = dao.signupList(offerDate).map(u => u.userId)
           if(userSignupList.contains(id)) { // client signed up
-            if(!isPM && Days.daysBetween(today, offerDate) < globals.minUnsignupNotice ) {
+            if(!isPM && (Days.daysBetween(today, offerDate).getDays() < globals.minUnsignupNotice) ) {
               Ok(views.html.message("You are signed up for %s, and it is now too late to pull out.".format(offerDate.toString)))
             }
             else {
