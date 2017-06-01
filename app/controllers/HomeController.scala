@@ -78,7 +78,7 @@ class HomeController @Inject() extends Controller {
         val futureDates = dao.sessions().filter(s => s.date.compareTo(today) > 0).map(s => s.date)
         logger.debug("Future dates of trainings known to the system: %s".format(futureDates.map(_.toString).mkString(",")))
 
-        val possibleSignupDates = futureDates.filter(d => Days.daysBetween(today, d).getDays() <= allowedAdvancePeriod)
+        val possibleSignupDates = futureDates.filter(d => Days.daysBetween(today, d).getDays() < allowedAdvancePeriod)
         logger.debug("Possible signup dates for this user are: %s".format(possibleSignupDates.toString()))
         val offerDate = if(possibleSignupDates.nonEmpty) possibleSignupDates.head else null
         logger.debug("Offer date for this user is: %s".format(offerDate))

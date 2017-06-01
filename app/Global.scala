@@ -21,8 +21,8 @@ object Global extends GlobalSettings {
 
 package object globals {
 
-  val pmAdvancePeriod = 7; // days
-  val nonpmAdvancePeriod = 2; // days
+  val pmAdvancePeriod = 7; // diff days
+  val nonpmAdvancePeriod = 4; // diff days
 
   // uniqueID -> Name, ,isPM
   val users: Map[String, (String, String, Boolean)] = Map(
