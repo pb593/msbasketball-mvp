@@ -34,7 +34,14 @@ form
     margin: 0 auto;
 }
 
-form input[type="text"]
+
+.login__form
+{
+    width: 250px;
+    margin: 0 auto;
+}
+
+.login__form input[type="text"]
 {
     width: 100%;
     margin: 0;
@@ -53,7 +60,7 @@ form input[type="text"]
     text-align: center;
 }
 
-form.login input[type="submit"]
+.form__button_action
 {
     width: 100%;
     font-size: 24px;
@@ -65,36 +72,36 @@ form.login input[type="submit"]
     letter-spacing: 1px;
 }
 
-form.login input[type="submit"]:hover
+.form__button_action:hover
 {
     transition: background-color 0.5s ease;
 }
 
-form.login .remember-forgot
+.login__form.login .remember-forgot
 {
     float: left;
     width: 100%;
     margin: 10px 0 0 0;
 }
-form.login .forgot-pass-content
+.login__form.login .forgot-pass-content
 {
     min-height: 20px;
     margin-top: 10px;
     margin-bottom: 10px;
 }
-form.login label, form.login a
+.login__form.login label, .login__form.login a
 {
     font-size: 12px;
     font-weight: 400;
     color: #FFFFFF;
 }
 
-form.login a
+.login__form.login a
 {
     transition: color 0.5s ease;
 }
 
-form.login a:hover
+.login__form.login a:hover
 {
     color: #2ecc71;
 }

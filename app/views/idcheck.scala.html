@@ -1,12 +1,12 @@
 @()
 
 @main("MS Basketball") {
-    <span href="#" class="logo">
+    <a href="#" class="logo">
         <img src="@routes.Assets.versioned("images/mslogo.png")">
-    </span>
+    </a>
     <p class="form-title display-4">Please enter your MS Basketball ID</p>
-    <form method="post" action="@routes.HomeController.idSubmit()" class="login">
-        <input type="text" name="id"><br>
-        <input type="submit" class="pass-reset-submit btn btn-success btn-sm">
+    <form method="post" action="@routes.HomeController.login()" class="login__form">
+        <input class="login" type="text" name="id" title="id"><br>
+        <input type="submit" class="form__button_action btn btn-success btn-sm">
     </form>
 }

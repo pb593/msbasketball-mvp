@@ -5,7 +5,10 @@
 
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
-POST    /idSubmit                   controllers.HomeController.idSubmit
+
+GET    /participant/:id                   controllers.HomeController.profile(id)
+
+POST    /login                   controllers.HomeController.login
 POST    /signup                     controllers.HomeController.signup
 
 GET     /db                         controllers.HomeController.db

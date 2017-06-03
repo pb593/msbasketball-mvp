@@ -12,6 +12,7 @@ import play.api.data.Forms._
 import play.api.cache.Cache
 import play.api.Play.current
 import play.api.db._
+import views.html.idcheck
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -59,11 +60,17 @@ class HomeController @Inject() extends Controller {
     }
   }
 
-  def idSubmit = Action { implicit request =>
-    logger.debug(request.body.toString())
+  def login = Action { implicit request =>
     val id = idSubmitForm.bindFromRequest.get
     logger.debug("User with id %s just tried to sign in".format(id))
+    // attempt to retrieve user's profile
+    dao.userProfile(id) match {
+      case Some(u: User) => Redirect(routes.HomeController.profile(id))
+      case None => Ok(views.html.message("Unknown user. Did you type in your ID correctly???"))
+    }
+  }
 
+  def profile(id: String) = Action { implicit request =>
     // attempt to retrieve user's profile
     dao.userProfile(id) match {
       case Some(u: User) => { // user found
@@ -101,7 +108,6 @@ class HomeController @Inject() extends Controller {
               Ok(views.html.signup(offerDate, id, false))
           }
         }
-
       }
       case None => { // user not found
         Ok(views.html.message("Unknown user. Did you type in your ID correctly???"))
@@ -119,16 +125,16 @@ class HomeController @Inject() extends Controller {
   def signup = Action { implicit request =>
     val inputForm: SignupForm = signupForm.bindFromRequest.get
     val date = new LocalDate(inputForm.date)
+    val userId = inputForm.userId
     Ok(views.html.message("Got the signup form: %s".format(inputForm.toString)))
     // todo: add validation
     if(inputForm.action == "signup") { // user wants to signup
-      dao.signupUser(inputForm.userId, date)
-      Ok(views.html.message("User with id %s successfully signed up for session on %s".format(inputForm.userId, date.toString)))
+      dao.signupUser(userId, date)
     }
     else { // unsignup
-      dao.unsignupUser(inputForm.userId, date)
-      Ok(views.html.message("User with id %s successfully un-signed up from session on %s".format(inputForm.userId, date.toString)))
+      dao.unsignupUser(userId, date)
     }
+    Redirect(routes.HomeController.profile(userId))
   }
 
   def db = Action {
