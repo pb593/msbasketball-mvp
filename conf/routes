@@ -8,7 +8,7 @@ GET     /                           controllers.HomeController.index
 POST    /idSubmit                   controllers.HomeController.idSubmit
 POST    /signup                     controllers.HomeController.signup
 
-GET     /db                         controllers.HomeController.db
+#GET     /db                         controllers.HomeController.db
 
 GET     /state                      controllers.HomeController.state
 

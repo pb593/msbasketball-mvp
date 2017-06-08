@@ -35,7 +35,7 @@ class HomeController @Inject() extends Controller {
   )
 
   def nextSessionDate: Option[LocalDate] = {
-    dao.sessions().filter(s => s.date.compareTo(LocalDate.now()) > 0).map(s => s.date).headOption
+    dao.sessions().filter(s => s.date.compareTo(LocalDate.now()) >= 0).map(s => s.date).headOption
   }
 
   val logger = Logger.logger
@@ -75,33 +75,35 @@ class HomeController @Inject() extends Controller {
         val allowedAdvancePeriod = if(isPM) globals.pmAdvancePeriod else globals.nonpmAdvancePeriod
         logger.debug("For this user, advance booking period is %d days".format(allowedAdvancePeriod))
 
-        val futureDates = dao.sessions().filter(s => s.date.compareTo(today) > 0).map(s => s.date)
-        logger.debug("Future dates of trainings known to the system: %s".format(futureDates.map(_.toString).mkString(",")))
 
-        val possibleSignupDates = futureDates.filter(d => Days.daysBetween(today, d).getDays() < allowedAdvancePeriod)
-        logger.debug("Possible signup dates for this user are: %s".format(possibleSignupDates.toString()))
-        val offerDate = if(possibleSignupDates.nonEmpty) possibleSignupDates.head else null
-        logger.debug("Offer date for this user is: %s".format(offerDate))
-        if(offerDate == null) // no future date for which can signup
-          Ok(views.html.message("No date for which you could sign up at the moment. Check back later"))
-        else { // there is a potential signup date
-          val userSignupList = dao.signupList(offerDate).map(u => u.userId)
-          if(userSignupList.contains(id)) { // client signed up
-            if(!isPM && (Days.daysBetween(today, offerDate).getDays() < globals.minUnsignupNotice) ) {
-              Ok(views.html.message("You are signed up for %s, and it is now too late to pull out.".format(offerDate.toString)))
+        nextSessionDate match {
+          case Some(offerDate) => {
+            if(Days.daysBetween(today, offerDate).getDays < allowedAdvancePeriod) {
+              // there is a pontential signup date
+              val userSignupList = dao.signupList(offerDate).map(u => u.userId)
+              if(userSignupList.contains(id)) { // client signed up
+                if(!isPM && (Days.daysBetween(today, offerDate).getDays < globals.minUnsignupNotice) ) {
+                  Ok(views.html.message("You are signed up for %s, and it is now too late to pull out.".format(offerDate.toString)))
+                }
+                else {
+                  Ok(views.html.signup(offerDate, id, isUserIn = true))
+                }
+              }
+              else { // client not signed up
+                if(userSignupList.size >= 15) // date FULL
+                  Ok(views.html.message("The only date for which you could signup for is %s, but this session is currently FULL.".format(offerDate.toString)))
+                else // not FULL
+                  Ok(views.html.signup(offerDate, id, isUserIn = false))
+              }
             }
             else {
-              Ok(views.html.signup(offerDate, id, true))
+              Ok(views.html.message("No date for which you could sign up at the moment. Check back later"))
             }
           }
-          else { // client not signed up
-            if(userSignupList.size >= 15) // date FULL
-              Ok(views.html.message("The only date for which you could signup for is %s, but this session is currently FULL.".format(offerDate.toString)))
-            else // not FULL
-              Ok(views.html.signup(offerDate, id, false))
+          case None => {
+            Ok(views.html.message("No date for which you could sign up at the moment. Check back later"))
           }
         }
-
       }
       case None => { // user not found
         Ok(views.html.message("Unknown user. Did you type in your ID correctly???"))
@@ -131,9 +133,9 @@ class HomeController @Inject() extends Controller {
     }
   }
 
-  def db = Action {
+  /*def db = Action {
     Ok(dao.unsignupUser("2bj31s", new LocalDate("2017-06-01")).toString)
-  }
+  }*/
 
 
 }
